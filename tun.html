@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RichStay - Student Rental Platform for Durban</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .property-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .property-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .chat-message { max-width: 70%; margin-bottom: 10px; }
+        .chat-message.sent { margin-left: auto; background-color: #667eea; color: white; }
+        .chat-message.received { margin-right: auto; background-color: #f3f4f6; color: black; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Header Section -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-home text-3xl"></i>
+                    <h1 class="text-3xl font-bold">RichStay</h1>
+                    <span class="text-sm bg-white bg-opacity-20 px-2 py-1 rounded">Durban Student Housing</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <button onclick="showTab('home')" class="hover:text-blue-200 transition">Home</button>
+                    <button onclick="showTab('properties')" class="hover:text-blue-200 transition">Properties</button>
+                    <button onclick="showTab('applications')" class="hover:text-blue-200 transition">Applications</button>
+                    <button onclick="showTab('messages')" class="hover:text-blue-200 transition">Messages</button>
+                    <button onclick="showTab('analytics')" class="hover:text-blue-200 transition">Analytics</button>
+                </nav>
+                <div class="flex space-x-3">
+                    <button onclick="openModal('loginModal')" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">Login</button>
+                    <button onclick="openModal('registerModal')" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg transition">Register</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Contents -->
+    <!-- Home Tab -->
+    <div id="home" class="tab-content active">
+        <!-- Hero Section -->
+        <section class="gradient-bg text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-5xl font-bold mb-6">Find Your Perfect Student Accommodation in Durban</h2>
+                <p class="text-xl mb-8 max-w-3xl mx-auto">RichStay connects students with quality rental properties while providing landlords with reliable tenants through advanced screening and transparent processes.</p>
+                <!-- Search Bar -->
+                <div class="bg-white rounded-lg p-6 max-w-4xl mx-auto shadow-xl">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <input type="text" placeholder="Location (e.g., Near UKZN)" class="p-3 border rounded-lg text-gray-700">
+                        <select class="p-3 border rounded-lg text-gray-700">
+                            <option>Property Type</option>
+                            <option>Apartment</option>
+                            <option>House</option>
+                            <option>Shared Room</option>
+                            <option>Studio</option>
+                        </select>
+                        <select class="p-3 border rounded-lg text-gray-700">
+                            <option>Price Range</option>
+                            <option>R2000-R4000</option>
+                            <option>R4000-R6000</option>
+                            <option>R6000-R8000</option>
+                            <option>R8000+</option>
+                        </select>
+                        <button class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-search mr-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Key Features -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose RichStay?</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center p-6 bg-gray-50 rounded-lg">
+                        <i class="fas fa-shield-alt text-4xl text-blue-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-3">Advanced Tenant Screening</h4>
+                        <p class="text-gray-600">Reduce tenant arrears with comprehensive credit checks and financial verification tools.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg">
+                        <i class="fas fa-map-marker-alt text-4xl text-blue-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-3">Location-Based Search</h4>
+                        <p class="text-gray-600">Find properties near universities and key landmarks with integrated GPS mapping.</p>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg">
+                        <i class="fas fa-comments text-4xl text-blue-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold mb-3">Direct Communication</h4>
+                        <p class="text-gray-600">Connect directly with landlords without traditional agent intermediaries.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Statistics -->
+        <section class="py-16 gradient-bg text-white">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-bold mb-2">1,250+</div>
+                        <div class="text-blue-200">Active Properties</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">3,400+</div>
+                        <div class="text-blue-200">Registered Students</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">850+</div>
+                        <div class="text-blue-200">Verified Landlords</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">95%</div>
+                        <div class="text-blue-200">Satisfaction Rate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Properties Tab -->
+    <div id="properties" class="tab-content">
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-3xl font-bold text-gray-800">Available Properties</h3>
+                    <button onclick="openModal('addPropertyModal')" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-plus mr-2"></i>Add Property
+                    </button>
+                </div>
+                <!-- Filters -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <div class="grid md:grid-cols-5 gap-4">
+                        <select class="p-2 border rounded">
+                            <option>All Areas</option>
+                            <option>Near UKZN</option>
+                            <option>Near DUT</option>
+                            <option>Durban Central</option>
+                            <option>Berea</option>
+                        </select>
+                        <select class="p-2 border rounded">
+                            <option>All Types</option>
+                            <option>Apartment</option>
+                            <option>House</option>
+                            <option>Shared Room</option>
+                        </select>
+                        <input type="number" placeholder="Min Price (R)" class="p-2 border rounded">
+                        <input type="number" placeholder="Max Price (R)" class="p-2 border rounded">
+                        <button class="bg-gray-800 text-white p-2 rounded hover:bg-gray-700 transition">Filter</button>
+                    </div>
+                </div>
+                <!-- Property Grid -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Property Card 1 -->
+                    <div class="property-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="h-48 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
+                            <i class="fas fa-image text-white text-4xl"></i>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-xl font-semibold mb-2">Modern Apartment near UKZN</h4>
+                            <p class="text-gray-600 mb-3">2 bedrooms, 1 bathroom, furnished</p>
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                                <span class="text-sm">0.5km from UKZN Westville</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-blue-600">R5,500/month</span>
+                                <button onclick="openModal('applicationModal')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Additional property cards... -->
+                </div>
+                <!-- Map Section -->
+                <div class="mt-12 bg-white rounded-lg shadow-md p-6">
+                    <h4 class="text-xl font-semibold mb-4">Property Locations</h4>
+                    <div class="h-96 bg-gradient-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-map text-6xl text-blue-500 mb-4"></i>
+                            <p class="text-gray-600">Interactive Map Integration</p>
+                            <p class="text-sm text-gray-500">Google Maps API showing property locations near universities</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Applications Tab -->
+    <div id="applications" class="tab-content">
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <h3 class="text-3xl font-bold text-gray-800 mb-8">Application Management</h3>
+                <!-- Application Status Overview -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                        <i class="fas fa-clock text-3xl text-yellow-600 mb-3"></i>
+                        <h4 class="text-xl font-semibold mb-2">Pending</h4>
+                        <p class="text-2xl font-bold text-yellow-600">8</p>
+                    </div>
+                    <!-- Additional status cards... -->
+                </div>
+                <!-- Recent Applications -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="p-6 border-b">
+                        <h4 class="text-xl font-semibold">Recent Applications</h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <!-- Table headers and rows... -->
+                        </table>
+                    </div>
+                </div>
+                <!-- Tenant Screening Tools -->
+                <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+                    <h4 class="text-xl font-semibold mb-4">Tenant Evaluation Tools</h4>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Screening tool cards... -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Messages Tab -->
+    <div id="messages" class="tab-content">
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <h3 class="text-3xl font-bold text-gray-800 mb-8">Messages</h3>
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Conversations List -->
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b">
+                            <h4 class="text-lg font-semibold">Conversations</h4>
+                        </div>
+                        <div class="h-96 overflow-y-auto">
+                            <!-- Conversation items... -->
+                        </div>
+                    </div>
+                    <!-- Chat Area -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow-md">
+                        <div class="p-6 border-b">
+                            <h4 class="text-lg font-semibold">Chat with John Patel</h4>
+                            <p class="text-sm text-gray-500">Landlord - Modern Apartment near UKZN</p>
+                        </div>
+                        <div class="h-80 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                            <!-- Chat messages... -->
+                        </div>
+                        <div class="p-4 border-t">
+                            <div class="flex space-x-3">
+                                <input type="text" placeholder="Type your message..." class="flex-1 p-3 border rounded-lg focus:outline-none focus:border-blue-500" id="messageInput">
+                                <button onclick="sendMessage()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics" class="tab-content">
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <h3 class="text-3xl font-bold text-gray-800 mb-8">Analytics & Reports</h3>
+                <!-- KPI Cards -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <!-- KPI cards... -->
+                </div>
+                <!-- Charts -->
+                <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Revenue Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-4">Monthly Revenue Trends</h4>
+                        <div style="height: 300px;">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Property Types Chart -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-4">Property Types Distribution</h4>
+                        <div style="height: 300px;">
+                            <canvas id="propertyTypesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tenant Payment History -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="p-6 border-b">
+                        <h4 class="text-lg font-semibold">Tenant Payment Analysis</h4>
+                    </div>
+                    <div style="height: 400px;" class="p-6">
+                        <canvas id="paymentChart"></canvas>
+                    </div>
+                </div>
+                <!-- Reports Section -->
+                <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+                    <h4 class="text-lg font-semibold mb-4">Generate Reports</h4>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <!-- Report buttons... -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <!-- Login form... -->
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="bg-white rounded-lg p-8 max-w-lg w-full mx-4">
+            <!-- Registration form... -->
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="applicationModal" class="modal">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <!-- Application form... -->
+        </div>
+    </div>
+
+    <!-- Add Property Modal -->
+    <div id="addPropertyModal" class="modal">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <!-- Add property form... -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <!-- Footer content... -->
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Tab Management
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Chat Functionality
+        function loadChat(userId) {
+            const chatMessages = document.getElementById('chatMessages');
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (message) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message sent bg-blue-500 text-white p-3 rounded-lg';
+                messageDiv.innerHTML = `
+                    <div class="text-sm">${message}</div>
+                    <div class="text-xs text-blue-100 mt-1">You • Just now</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                messageInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Chart Initialization
+        function initializeCharts() {
+            // Chart configurations...
+        }
+
+        // Event Listeners and Other Scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializeCharts, 100);
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+
+        // Simulated Notifications
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Real-time Updates Simulation
+        setInterval(() => {
+            if (Math.random() > 0.98) {
+                showNotification('New application received!', 'success');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
